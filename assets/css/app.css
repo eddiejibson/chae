@@ -1,0 +1,206 @@
+.uk-navbar-container:not(.uk-navbar-transparent) {
+  background: #2B2C31;
+}
+
+.uk-navbar-toggle {
+  color: #bdc3c7;
+}
+
+.uk-navbar-toggle:hover {
+  color: #d0d5d8;
+}
+
+
+.profile-picture {
+  width: 150px;
+}
+
+.profile-picture img {
+  border-radius: 50%;
+}
+
+.uk-card-default {
+  background: #2B2C31;
+  color: #bdc3c7;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+  border-radius: 3px;
+}
+
+.uk-textarea,
+.uk-input {
+  background: #2B2C31;
+  color: #bdc3c7;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+  border-radius: 3px;
+  resize: none;
+  border-color: #28292d;
+}
+
+.editor-toolbar {
+  background-color: #28292d;
+  border: 0;
+}
+
+.editor-toolbar i.separator {
+  display: none;
+}
+
+.editor-toolbar a {
+  color: #bdc3c7 !important;
+}
+
+.CodeMirror {
+  background: #2B2C31;
+  color: #bdc3c7;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+  border-radius: 3px;
+  resize: none;
+  border-color: #28292d;
+  z-index: 0;
+}
+
+.uk-textarea:focus,
+.uk-input:focus {
+  border-color: #242528;
+  background-color: #2B2C31;
+  color: #fff;
+}
+
+.margin-bottom {
+  margin-bottom: 10px;
+}
+
+.uk-card-default .uk-card-title {
+  color: #fff;
+  margin-bottom: 0;
+}
+
+.bio {
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+.profile-info {
+  margin-left: 20px;
+}
+
+.uk-link,
+a {
+  color: #fff;
+}
+
+.login-state {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #bdc3c7;
+  margin-bottom: 20px;
+}
+
+
+html {
+  background: #313339;
+}
+
+.posts {
+  margin-top: 40px;
+}
+
+.post {
+  padding: 20px;
+  border-radius: 5px;
+  border: 1px solid #242528;
+  background-color: #28292d;
+
+}
+
+.post h1 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.post p {
+  margin-top: 10px;
+}
+
+.uk-button-primary {
+  background-color: #2B2C31;
+  text-transform: none;
+  color: #bdc3c7;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  line-height: 50px;
+}
+
+
+.uk-button-primary:hover {
+  background-color: #242528;
+  color: #fff;
+}
+
+.uk-button-primary:active {
+  background-color: #151618;
+  color: #fff;
+}
+
+.uk-button-primary:focus {
+  background-color: #2B2C31;
+  color: #fff;
+}
+
+.page-loader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-loader svg {
+  width: 50px;
+  height: 50px;
+  color: #bdc3c7;
+}
+
+.page-loader p {
+  text-align: center;
+  color: #bdc3c7;
+}
+
+.textarea-info {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: end;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.textarea-info p {
+  margin: 0;
+  margin-right: 20px;
+}
+
+.editor-toolbar button.active,
+.editor-toolbar button:hover {
+  background: inherit;
+  border: 0;
+  color: #fff;
+  padding: 1px;
+}
+
+.editor-toolbar button {
+  color: #bdc3c7;
+}
+
+.CodeMirror-focused .CodeMirror-selected,
+.CodeMirror-line::selection,
+.CodeMirror-line>span::selection,
+.CodeMirror-line>span>span::selection {
+  background: #3399FF;
+  color: #fff;
+}
+
+.CodeMirror-cursor {
+  border-left: 1px solid #bdc3c7;
+  border-right: none;
+  width: 0
+}

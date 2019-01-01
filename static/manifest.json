@@ -1,0 +1,10 @@
+{
+  "name": "Chae",
+  "start_url": "localhost:8080",
+  "description": "Write powerful documentation.",
+  "icons": [{
+    "src": "https://cdn.chae.sh/img/icons/192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }]
+}
