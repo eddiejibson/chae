@@ -46,7 +46,7 @@ export default {
     this.$getOptions("bio")
       .then(res => {
         if (res) {
-          this.bio = res;
+          this.bio = res.content;
         }
       })
       .catch(err => {

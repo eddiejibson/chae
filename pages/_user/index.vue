@@ -14,16 +14,19 @@ import axios from "axios";
 
 export default {
   validate({ params }) {
-    return !isNaN(+params.id);
+    return !isNaN(+params.user);
   },
   async asyncData({ params, error }) {
     try {
       const { data } = await axios.get(
-        `https://jsonplaceholder.typicode.com/users/${+params.id}`
+        `https://jsonplaceholder.typicode.com/users/${+params.user}`
       );
       return data;
     } catch (e) {
-      error({ message: "User not found", statusCode: 404 });
+      const { data } = await axios.get(
+        `https://jsonplaceholder.typicode.com/users/1`
+      );
+      return data;
     }
   }
 };

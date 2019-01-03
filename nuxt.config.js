@@ -26,6 +26,9 @@ module.exports = {
       },
       {
         src: "https://cdn.oxro.io/uikit/3.0.25/js/uikit-icons.min.js"
+      },
+      {
+        src: "https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"
       }
     ],
     link: [{

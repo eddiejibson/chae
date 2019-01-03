@@ -35,7 +35,7 @@
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="https://github.com/eddiejibson/chae/">
             <span class="uk-margin-small-right" uk-icon="icon: github"></span>GitHub
           </a>
         </li>
