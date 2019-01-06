@@ -2,7 +2,7 @@
   <div class="uk-flex uk-flex-center uk-flex-column uk-flex-middle">
     <div class="page-loader" v-if="loading">
       <div uk-spinner></div>
-      <p>Fetching data...</p>
+      <p>{{ profile }}</p>
     </div>
     <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m" v-if="!loading">
       <div class="profile-top">
@@ -18,7 +18,7 @@
       </div>
       <div class="posts uk-flex uk-flex-column">
         <div class="post">
-          <h1>Post title</h1>
+          <h1>{{ blockstack }}</h1>
           <p>Post content</p>
         </div>
       </div>
@@ -27,31 +27,48 @@
 </template>
 
 <script>
+import * as blockstack from "blockstack";
+import axios from "axios";
 export default {
+  props: {
+    remote: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       user: "Username",
       bio: "I don't have a bio...",
       propic: "",
-      loading: true
+      loading: true,
+      profile: {}
+      // items: [
+      //   {
+      //     message: "fag",
+      //     bigMessage: "bigfag"
+      //   }
+      // ]
     };
   },
   mounted() {
-    this.$requireSignIn(this.$router);
-    this.$lookupProfile("m1screant.id.blockstack");
-    var res = this.$getProfile();
-    this.user = res.account[0].identifier;
-    this.propic = res.image[0].contentUrl;
-    this.loading = false;
-    this.$getOptions("bio")
-      .then(res => {
-        if (res) {
-          this.bio = res.content;
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    console.log(this.$store.state);
+    if (!this.remote) {
+      this.$requireSignIn(this.$router);
+      var res = this.$getProfile();
+      this.user = res.account[0].identifier;
+      this.propic = res.image[0].contentUrl;
+      this.loading = false;
+      this.$getOptions("bio")
+        .then(res => {
+          if (res) {
+            this.bio = res.content;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
   }
 };
 </script>

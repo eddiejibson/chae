@@ -70,11 +70,64 @@
   z-index: 0;
 }
 
+.not-found-container h1 {
+  color: #bdc3c7;
+  font-size: 10rem;
+  margin-bottom: 0;
+}
+
+.not-found-container p {
+  margin-top: 5px;
+  font-size: 2rem;
+}
+
+.not-found-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  width: 100%;
+  position: absolute;
+}
+
 .uk-textarea:focus,
 .uk-input:focus {
   border-color: #242528;
   background-color: #2B2C31;
   color: #fff;
+}
+
+.slug-info p {
+  display: flex;
+  margin: 0;
+  display: inline;
+}
+
+.slug-info {
+  flex-direction: space-between;
+  align-content: center;
+}
+
+.slug-edit {
+  color: #74b9ff;
+}
+
+.slug-edit:hover {
+  color: #0984e3;
+}
+
+/* .slug-hide {
+  color: #a29bfe;
+} */
+
+/* .slug-hide:hover {
+  color: #6c5ce7;
+} */
+
+.slug-edit,
+.slug-hide {
+  cursor: pointer;
 }
 
 .margin-bottom {

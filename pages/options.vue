@@ -34,7 +34,8 @@ export default {
       savedStatus: "No changes.",
       existingBio: "",
       lastEdited: "",
-      lastEditedInt: 0
+      lastEditedInt: 0,
+      timeout: 0
     };
   },
   methods: {
@@ -42,8 +43,8 @@ export default {
       this.existingBio = e.target.value;
       this.characters = this.$characterCounter(e);
       this.savedStatus = "Waiting for user to finish typing...";
-      clearTimeout(window.timeout);
-      window.timeout = setTimeout(() => {
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
         this.savedStatus = "Saving...";
         this.$saveOptions({
           bio: e
@@ -61,7 +62,7 @@ export default {
   },
   mounted() {
     this.$requireSignIn(this.$router);
-    window.timeout = null;
+    this.timeout = null;
     this.$getOptions("bio")
       .then(res => {
         if (res) {

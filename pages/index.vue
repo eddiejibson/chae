@@ -17,8 +17,9 @@
 
 <script>
 import Logo from "~/components/Logo.vue";
-
+import { mapMutations } from "vuex";
 export default {
+  layout: "default",
   components: {
     Logo
   },

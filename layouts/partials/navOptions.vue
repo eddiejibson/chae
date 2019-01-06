@@ -40,7 +40,7 @@
           </a>
         </li>
         <li class="uk-nav-divider"></li>
-        <li>
+        <li @click.prevent="signOut">
           <a href="#">
             <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span>Sign out
           </a>
@@ -51,6 +51,11 @@
 </template>
 <script>
 export default {
-  mounted() {}
+  methods: {
+    signOut(e) {
+      this.$signOut();
+      console.log("hi");
+    }
+  }
 };
 </script>

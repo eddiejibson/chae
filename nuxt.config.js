@@ -35,15 +35,6 @@ module.exports = {
       rel: 'icon',
       type: 'image/x-icon',
       href: '/favicon.ico'
-    }, {
-      rel: "stylesheet",
-      href: "https://cdn.oxro.io/uikit/3.0.25/css/uikit.min.css"
-    }, {
-      rel: "stylesheet",
-      href: "https://cdn.jsdelivr.net/npm/inscrybmde@1.11.6/dist/inscrybmde.min.css"
-    }, {
-      rel: "stylesheet",
-      href: "https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css"
     }]
   },
 
@@ -57,9 +48,7 @@ module.exports = {
   /*
    ** Global CSS
    */
-  css: [
-    "@/assets/css/app.css"
-  ],
+  css: [],
 
   /*
    ** Plugins to load before mounting the App
@@ -73,7 +62,8 @@ module.exports = {
    */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    "@/modules/blockstack.js"
   ],
   /*
    ** Axios module configuration
