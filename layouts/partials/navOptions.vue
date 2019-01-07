@@ -14,9 +14,9 @@
           </a>
         </li>
         <li>
-          <a href="#">
+          <nuxt-link :to="username" v-if="username">
             <span class="uk-margin-small-right" uk-icon="icon: user"></span> My Profile
-          </a>
+          </nuxt-link>
         </li>
         <li>
           <nuxt-link to="/options">
@@ -56,6 +56,15 @@ export default {
       this.$signOut();
       console.log("hi");
     }
+  },
+  data() {
+    return {
+      username: null
+    };
+  },
+  mounted() {
+    this.$requireSignIn(this.$router);
+    this.username = sessionStorage.getItem("username");
   }
 };
 </script>

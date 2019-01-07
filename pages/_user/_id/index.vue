@@ -1,11 +1,28 @@
 <template>
-  <div class="user">
-    <h3>{{ name }}</h3>
-    <h4>@{{ username }}</h4>
-    <p>Email : {{ email }}</p>
-    <p>
-      <NuxtLink to="/">List of users</NuxtLink>
-    </p>
+  <div class="uk-flex uk-flex-center uk-flex-column uk-flex-middle">
+    <div class="page-loader" v-if="loading">
+      <div uk-spinner></div>
+      <p>Loading Content</p>
+    </div>
+    <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m" v-if="!loading">
+      <div class="profile-top">
+        <div class="uk-flex uk-flex-row">
+          <div class="profile-picture">
+            <img :src="propic">
+          </div>
+          <div class="profile-info">
+            <h3 class="uk-card-title">{{ user }}</h3>
+            <p class="bio">{{ bio }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="posts uk-flex uk-flex-column">
+        <div class="post">
+          <h1>Post Title</h1>
+          <p>Post content</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -17,13 +34,20 @@ export default {
     return true;
   },
   async asyncData({ params, error }) {
-    return blockstack.lookupProfile(String(params.id)).then(res => {
-      return {
-        blockstack: res
-      };
-    }).catch(err => {
-      error({message: "user not found", statusCode: 404})
-    });
+    return blockstack
+      .lookupProfile(params.user)
+      .then(res => {
+        return {
+          user: res.account[0].identifier,
+          propic: res.image[0].contentUrl,
+          loading: false,
+          bio: "Loading bio...",
+          remote: true
+        };
+      })
+      .catch(err => {
+        error({ message: "user not found", statusCode: 404 });
+      });
   },
   mounted() {
     console.log(this);
