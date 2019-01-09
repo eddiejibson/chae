@@ -54,7 +54,6 @@ export default {
   methods: {
     signOut(e) {
       this.$signOut();
-      console.log("hi");
     }
   },
   data() {
@@ -63,8 +62,7 @@ export default {
     };
   },
   mounted() {
-    this.$requireSignIn(this.$router);
-    this.username = sessionStorage.getItem("username");
+    this.username = localStorage.getItem("username");
   }
 };
 </script>

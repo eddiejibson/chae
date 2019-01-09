@@ -33,6 +33,8 @@
         <button
           class="uk-button uk-button-primary publish-btn"
           @click.prevent="updatePost"
+          :class="{ disabled: disabled }"
+          :disabled="disabled"
         >{{ updateOrPublish }}</button>
       </div>
     </div>
@@ -40,12 +42,18 @@
 </template>
 <script>
 export default {
+  props: {
+    edit: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       characters: 0,
       savedStatus: "Nothing to save.",
       updateOrPublish: "Publish",
-      post: "",
+      post: null,
       title: null,
       needsPublish: true,
       timeout: 0,
@@ -53,11 +61,44 @@ export default {
       lastEditedBool: false,
       slug: null,
       userData: null,
-      update: false
+      update: false,
+      disabled: false,
+      draftSlug: null,
+      editedSinceUpdate: false
     };
   },
   mounted() {
     this.$requireSignIn(this.$router);
+    if (this.edit) {
+      let file = "posts.json";
+      if (this.$route.params.post.toLowerCase().substr(0, 6) == "draft-") {
+        file = "drafts.json";
+      }
+      this.$getFileContents(file)
+        .then(post => {
+          if (post[this.$route.params.post]) {
+            this.post = post[this.$route.params.post].content;
+            this.title = post[this.$route.params.post].title;
+            this.slugInfo = true;
+            this.update = true;
+            this.slug = this.$route.params.post;
+            this.characters = this.post.length;
+          } else {
+            console.error(
+              "Post could not be found with specified slug. Taking user to post page instead..."
+            );
+            this.$router.push("/post");
+          }
+        })
+        .catch(err => {
+          console.error(
+            "Error retrieving posts. Taking user to post page instead...",
+            err
+          );
+          this.$router.push("/post");
+        });
+      this.updateOrPublish = "Update";
+    }
     UIkit.offcanvas("#offcanvas-nav").hide();
     this.timeout = null;
     this.userData = this.$getProfile(false);
@@ -69,16 +110,26 @@ export default {
       this.savedStatus = "Waiting for user to finish typing...";
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
-        this.$saveDraft(e.target.value).then(res => {
-          this.savedStatus = "Saved Draft.";
-          this.title = res.title;
-        });
+        this.$saveDraft(e.target.value, this.title, this.draftSlug)
+          .then(res => {
+            this.savedStatus = "Saved Draft.";
+            if (res.title) {
+              this.title = res.title;
+            } else if (res.slug) {
+              this.draftSlug = res.slug;
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            this.savedStatus = "Error saving draft :(";
+          });
       }, 800);
     },
     updateTitle(e) {
       this.title = e.target.value;
     },
     updatePost() {
+      this.disabled = true;
       let pubOrUpd = this.updateOrPublish;
       if (pubOrUpd.toLowerCase().substr(-1) == "e") {
         pubOrUpd = pubOrUpd.substr(0, pubOrUpd.length - 1);
@@ -92,22 +143,19 @@ export default {
       ).then(res => {
         if (res) {
           this.update = true;
-          this.updateOrPublish = `${pubOrUpd}ed.`;
+          this.updateOrPublish = "Update";
           this.title = res.title || this.title;
           this.savedStatus = `${pubOrUpd}ed.`;
           if (res.slug) {
             this.slug = res.slug;
             this.slugInfo = true;
-            history.pushState(
-              {},
-              this.title,
-              `${window.location.origin}/${this.userData.username}/${this.slug}`
-            );
+            // history.pushState(
+            //   {},
+            //   this.title,
+            //   `${window.location.origin}/edit/${this.slug}`
+            // );
           }
-
-          setTimeout(() => {
-            this.updateOrPublish = "Update";
-          }, 800);
+          this.disabled = false;
         }
       });
     },

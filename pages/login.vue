@@ -15,12 +15,21 @@ export default {
   methods: {
     signIn() {
       this.$signIn();
-    },
-    test() {
-      if (this.$test2) {
-        this.$router.push("/post");
-      }
     }
+  },
+  mounted() {
+    this.$requireSignIn(this.$router)
+      .then(res => {
+        if (res) {
+          let origin = window.location.origin;
+          window.location.replace(`${origin}/${res}`);
+          console.log(`${origin}/${res}`);
+        } else {
+        }
+      })
+      .catch(err => {
+        console.error("Oh no", err);
+      });
   }
 };
 </script>

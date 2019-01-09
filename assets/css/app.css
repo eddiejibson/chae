@@ -170,6 +170,7 @@ html {
 }
 
 .post {
+  margin-top: 10px;
   padding: 20px;
   border-radius: 5px;
   border: 1px solid #242528;
@@ -185,6 +186,20 @@ html {
 
 .post p {
   margin-top: 10px;
+}
+
+.not-found h4 {
+  color: #bdc3c7;
+  margin: 0;
+}
+
+.uk-button-danger:disabled,
+.uk-button-default:disabled,
+.uk-button-primary:disabled,
+.uk-button-secondary:disabled {
+  background-color: #2B2C31 !important;
+  cursor: not-allowed;
+  border-color: #ff4757 !important;
 }
 
 .uk-button-primary {

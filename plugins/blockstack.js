@@ -7,18 +7,18 @@ export default {
 
 export const signIn = () => {
   let origin = window.location.origin;
-  blockstack.redirectToSignIn(origin, origin + "/manifest.json", ['store_write', 'publish_data']);
+  blockstack.redirectToSignIn(origin + "/login", origin + "/manifest.json", ['store_write', 'publish_data']);
 };
 
 export const requireSignIn = (router) => {
   return new Promise((resolve, reject) => {
     if (blockstack.isUserSignedIn()) {
-      let username = sessionStorage.getItem("username");
+      let username = localStorage.getItem("username");
       if (!username) {
         let data = blockstack.loadUserData();
         username = data.username;
-        sessionStorage.setItem("username", data.username);
-        sessionStorage.setItem("userData", JSON.stringify(data));
+        localStorage.setItem("username", data.username);
+        sessiolocalStoragenStorage.setItem("userData", JSON.stringify(data));
         resolve(username);
       } else {
         resolve(username);
@@ -26,11 +26,11 @@ export const requireSignIn = (router) => {
 
     } else if (blockstack.isSignInPending()) {
       blockstack.handlePendingSignIn().then((data) => {
-        let username = sessionStorage.getItem("username");
+        let username = localStorage.getItem("username");
         if (!username) {
           username = data.username;
-          sessionStorage.setItem("username", data.username);
-          sessionStorage.setItem("userData", JSON.stringify(data));
+          localStorage.setItem("username", data.username);
+          localStorage.setItem("userData", JSON.stringify(data));
           resolve(username);
         } else {
           resolve(username);
@@ -46,19 +46,53 @@ export const requireSignIn = (router) => {
 }
 
 export const signout = () => {
-  sessionStorage.removeItem("username");
-  sessionStorage.removeItem("userData");
+  localStorage.removeItem("username");
+  localStorage.removeItem("userData");
   blockstack.signUserOut(window.location.origin + "/login");
 }
 
-export const lookupProfile = () => {
+export const lookupProfile = (handle) => {
   return new Promise((resolve, reject) => {
-    blockstack.lookupProfile("m1screant.id.blockstack").then((res) => {
+    blockstack.lookupProfile(handle).then((res) => {
       resolve(res);
+    }).catch((err) => {
+      reject(err);
     });
   });
-
 }
+
+const getFileContentsInternal = (file = "options.json", user = null) => {
+  return new Promise((resolve, reject) => {
+    let opts = {};
+    if (user) {
+      opts.username = String(user);
+      opts.decrypt = false;
+    }
+    blockstack.getFile(String(file), opts).then((res) => {
+      resolve(JSON.parse(res));
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
+
+export const getFileContents = getFileContentsInternal;
+
+
+const putFileContentsInternal = (file = "options.json", content, isPrivate = false) => {
+  return new Promise((resolve, reject) => {
+    let opts = {
+      encrypt: false
+    };
+    blockstack.putFile(String(file), content, opts).then((res) => {
+      resolve(res);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
+
+export const putFileContents = putFileContentsInternal;
 
 export const characterCounter = (e) => {
   return e.target.value.length;
@@ -72,11 +106,6 @@ export const getProfile = (onlyProfile = true) => {
   }
 }
 
-// export const lookupProfile = (user) => {
-//   blockstack.lookupProfile(user).then(profile => {
-//     console.log(profile);
-//   });
-// }
 
 export const saveOptions = ({
   bio
@@ -88,7 +117,9 @@ export const saveOptions = ({
         "updated": Date.now()
       }
     };
-    blockstack.putFile("options.json", JSON.stringify(obj)).then((res) => {
+    blockstack.putFile("options.json", JSON.stringify(obj), {
+      encrypt: false
+    }).then((res) => {
       resolve(res);
     }).catch((err) => {
       reject(err);
@@ -97,30 +128,49 @@ export const saveOptions = ({
 }
 
 
-export const saveDraft = (content, title = null) => {
+export const saveDraft = (content, title = null, slug = null) => {
   return new Promise((resolve, reject) => {
-    getTitleFromContent(content).then((title) => {
-      let slug = "draft-" + uuid();
-      blockstack.getFile("drafts.json").then((drafts) => {
+    let originalTitle = title;
+    getTitleFromContent(content, title).then((title) => {
+      if (!slug) {
+        slug = uuid();
+      }
+      let slug = `draft-${slug}`;
+      blockstack.getFile("drafts.json", {
+        verify: false,
+        decrypt: false
+      }).then((drafts) => {
         if (drafts) {
           drafts = JSON.parse(drafts);
         } else {
           drafts = {};
         }
-        drafts[uuid] = {
+        drafts[slug] = {
           "title": title,
           "content": content,
           "updated": Date.now()
         };
-        blockstack.putFile("drafts.json", JSON.stringify(drafts)).then((res) => {
-          resolve({
-            "slug": slug,
-            "title": title,
-            "res": res
-          });
+        blockstack.putFile("drafts.json", JSON.stringify(drafts), {
+          encrypt: false
+        }).then((res) => {
+          if (originalTitle == title) {
+            resolve({
+              "slug": slug,
+              "res": res
+            });
+          } else {
+            resolve({
+              "slug": slug,
+              "title": title,
+              "res": res
+            });
+          }
+
         }).catch((err) => {
           reject(err);
         });
+      }).catch((err) => {
+        reject(err);
       })
     });
   });
@@ -128,7 +178,10 @@ export const saveDraft = (content, title = null) => {
 
 export const getOptions = (key = null) => {
   return new Promise((resolve, reject) => {
-    blockstack.getFile("options.json").then((res) => {
+    blockstack.getFile("options.json", {
+      verify: false,
+      decrypt: false
+    }).then((res) => {
       if (res) {
         res = JSON.parse(res);
         if (key) {
@@ -157,7 +210,10 @@ var generateSlug = (str, posts, update) => {
     str = str.toLowerCase().replace(/\s+/g, '-');
     while (taken && attempts < 5) {
       attempts++;
-      blockstack.getFile("posts.json").then((res) => {
+      blockstack.getFile("posts.json", {
+        verify: false,
+        decrypt: false
+      }).then((res) => {
         if (res && !update) {
           res = JSON.parse(res);
           if (!res[str]) {
@@ -187,7 +243,6 @@ var uuid = () => {
     }
     uuid += (i == 12 ? 4 : (i == 16 ? (random & 3 | 8) : random)).toString(16);
   }
-  console.log(uuid);
   return String(uuid);
 }
 
@@ -213,7 +268,7 @@ var getTitleFromContent = (content, title = null) => {
 var savePost = (content, title, slug, posts) => {
   return new Promise((resolve, reject) => {
     if (!posts) {
-      posts = {};
+      posts = [];
     }
     if (!posts[slug]) {
       posts[slug] = {};
@@ -223,7 +278,9 @@ var savePost = (content, title, slug, posts) => {
       "content": content,
       "updated": Date.now()
     };
-    blockstack.putFile("posts.json", JSON.stringify(posts)).then((res) => {
+    blockstack.putFile("posts.json", JSON.stringify(posts), {
+      encrypt: false
+    }).then((res) => {
       resolve(res);
     }).catch((err) => {
       reject(err);
@@ -231,11 +288,25 @@ var savePost = (content, title, slug, posts) => {
   })
 }
 
+export const deleteAll = () => {
+  blockstack.putFile("posts.json", "", {
+    encrypt: false
+  });
+  blockstack.putFile("options.json", "", {
+    encrypt: false
+  });
+  blockstack.putFile("drafts.json", "", {
+    encrypt: false
+  });
+}
 
 export const updatePost = (content, title = null, slug = null, update = false) => {
   return new Promise((resolve, reject) => {
     let originalTitle = String(title) || "";
-    blockstack.getFile("posts.json").then((posts) => {
+    blockstack.getFile("posts.json", {
+      verify: false,
+      decrypt: false
+    }).then((posts) => {
       if (posts) {
         posts = JSON.parse(posts);
       } else {
@@ -341,5 +412,6 @@ Vue.use((vm) => {
   vm.prototype.$updatePost = updatePost
   vm.prototype.$saveDraft = saveDraft
   vm.prototype.$signOut = signout;
-  // vm.prototype.$lookupProfile = lookupProfile
-})
+  vm.prototype.$getFileContents = getFileContents;
+  vm.prototype.$deleteAll = deleteAll;
+});

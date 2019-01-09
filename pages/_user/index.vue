@@ -17,9 +17,12 @@
         </div>
       </div>
       <div class="posts uk-flex uk-flex-column">
-        <div class="post">
-          <h1>Post Title</h1>
-          <p>Post content</p>
+        <div class="no-posts" v-if="!posts">
+          <h4 style="color: #bdc3c7;margin: 0;">{{ user }} hasn't authored any posts.</h4>
+        </div>
+        <div class="post" v-for="post in posts" :key="post.title">
+          <h1>{{ post.title }}</h1>
+          <p>{{ post.content }}</p>
         </div>
       </div>
     </div>
@@ -33,42 +36,51 @@ export default {
   validate({ params }) {
     return true;
   },
-  // async asyncData({ params, error }) {
-  //   return blockstack.lookupProfile(params.user).then(res => {
-  //     if (res) {
-  //       blockstack
-  //         .getFile("options.json", {
-  //           username: params.user,
-  //           app: "http://localhost:3000"
-  //         })
-  //         .then(options => {
-  //           return {
-  //             user: res.account[0].identifier,
-  //             propic: res.image[0].contentUrl,
-  //             loading: false,
-  //             bio: "Loading bio...",
-  //             remote: true
-  //           };
-  //         });
-  //     }
-  //   });
-  //   // .catch(err => {
-  //   //   error({ message: "user not found", statusCode: 404 });
-  //   // });
-  // },
   data() {
-    return {};
+    return {
+      user: "Loading username...",
+      bio: "Loading bio...",
+      propic: "https://cdn.chae.sh/img/icons/icon.png",
+      posts: null,
+      loading: true
+    };
   },
   mounted() {
-    console.log(this);
+    this.$lookupProfile(this.$route.params.user)
+      .then(profile => {
+        console.log(profile);
+        if (profile) {
+          this.user = profile.name;
+          this.propic = profile.image[0].contentUrl;
+          this.loading = false;
+          this.$getFileContents("options.json", this.$route.params.user)
+            .then(options => {
+              if (options.bio) {
+                this.bio = options.bio.content;
+              } else {
+                this.bio = "I haven't a bio, yet.";
+              }
+            })
+            .catch(err => {
+              this.bio = "I haven't a bio, yet.";
+            });
+          this.$getFileContents("posts.json", this.$route.params.user).then(
+            posts => {
+              console.log(posts);
+              if (posts) {
+                this.posts = posts;
+              }
+            }
+          );
+        } else {
+          this.$nuxt.error({ statusCode: 404, message: "user not found" });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        this.$nuxt.error({ statusCode: 404, message: "user not found" });
+      });
   }
 };
 </script>
 
-<style scoped>
-.user {
-  text-align: center;
-  margin-top: 100px;
-  font-family: sans-serif;
-}
-</style>
