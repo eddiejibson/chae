@@ -14,7 +14,7 @@
           </a>
         </li>
         <li>
-          <nuxt-link :to="username" v-if="username">
+          <nuxt-link :to="'/'+username+'/'" v-if="username">
             <span class="uk-margin-small-right" uk-icon="icon: user"></span> My Profile
           </nuxt-link>
         </li>
@@ -40,9 +40,14 @@
           </a>
         </li>
         <li class="uk-nav-divider"></li>
-        <li @click.prevent="signOut">
+        <li @click.prevent="signOut" v-if="username">
           <a href="#">
             <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span>Sign out
+          </a>
+        </li>
+        <li @click.prevent="signIn" v-if="!username">
+          <a href="#">
+            <span class="uk-margin-small-right" uk-icon="icon: sign-in"></span>Sign in
           </a>
         </li>
       </ul>
@@ -54,6 +59,9 @@ export default {
   methods: {
     signOut(e) {
       this.$signOut();
+    },
+    signIn() {
+      this.$signIn();
     }
   },
   data() {

@@ -28,7 +28,7 @@ module.exports = {
         src: "https://cdn.oxro.io/uikit/3.0.25/js/uikit-icons.min.js"
       },
       {
-        src: "https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"
+        src: "https://cdn.jsdelivr.net/npm/sweetalert2@7.33.1/dist/sweetalert2.all.min.js"
       }
     ],
     link: [{

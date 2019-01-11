@@ -16,12 +16,6 @@
           </div>
         </div>
       </div>
-      <div class="posts uk-flex uk-flex-column">
-        <div class="post">
-          <h1>Post Title</h1>
-          <p>Post content</p>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -30,35 +24,11 @@
 // import axios from "axios";
 import * as blockstack from "blockstack";
 export default {
-  validate({ params }) {
-    return true;
-  },
-  async asyncData({ params, error }) {
-    return blockstack
-      .lookupProfile(params.user)
-      .then(res => {
-        return {
-          user: res.account[0].identifier,
-          propic: res.image[0].contentUrl,
-          loading: false,
-          bio: "Loading bio...",
-          remote: true
-        };
-      })
-      .catch(err => {
-        error({ message: "user not found", statusCode: 404 });
-      });
-  },
-  mounted() {
-    console.log(this);
+  data() {
+    return {
+      loading: true
+    };
   }
 };
 </script>
 
-<style scoped>
-.user {
-  text-align: center;
-  margin-top: 100px;
-  font-family: sans-serif;
-}
-</style>

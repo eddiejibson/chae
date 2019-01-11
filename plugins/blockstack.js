@@ -1,8 +1,41 @@
+//This was meant to be for blockstack but then it got out of hand so i'll just leave it like this ty
 import Vue from "vue";
 import * as blockstack from "blockstack";
 
 export default {
   blockstack
+}
+
+const sortByKey = (arr, key) => {
+  return arr.sort(function (a, b) {
+    var x = parseInt(Object.values(a)[0][key]);
+    var y = parseInt(Object.values(b)[0][key]);
+    return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+  });
+}
+
+const arrayToObj = (arr) => {
+  let newObj = {};
+  for (var i = 0; i < arr.length; i++) {
+    let key = Object.keys(arr[i])[0];
+    newObj[key] = arr[i][key];
+  }
+  return newObj;
+}
+
+const objToArr = (obj) => {
+  return Object.keys(obj).map(function (key) {
+    return {
+      [key]: obj[key]
+    };
+  });
+}
+
+export const sortPostsByDate = (obj) => {
+  let arr = objToArr(obj);
+  arr = sortByKey(arr, "updated");
+  obj = arrayToObj(arr);
+  return obj;
 }
 
 export const signIn = () => {
@@ -63,13 +96,20 @@ export const lookupProfile = (handle) => {
 
 const getFileContentsInternal = (file = "options.json", user = null) => {
   return new Promise((resolve, reject) => {
-    let opts = {};
+    let opts = {
+      decrypt: false,
+      verify: false
+    };
     if (user) {
       opts.username = String(user);
-      opts.decrypt = false;
     }
     blockstack.getFile(String(file), opts).then((res) => {
-      resolve(JSON.parse(res));
+      if (res) {
+        resolve(JSON.parse(res));
+      } else {
+        resolve({});
+      }
+
     }).catch((err) => {
       reject(err);
     });
@@ -84,7 +124,7 @@ const putFileContentsInternal = (file = "options.json", content, isPrivate = fal
     let opts = {
       encrypt: false
     };
-    blockstack.putFile(String(file), content, opts).then((res) => {
+    blockstack.putFile(String(file), JSON.stringify(content), opts).then((res) => {
       resolve(res);
     }).catch((err) => {
       reject(err);
@@ -127,6 +167,24 @@ export const saveOptions = ({
   });
 }
 
+export const deletePost = (slug) => {
+  return new Promise((resolve, reject) => {
+    getFileContentsInternal("posts.json").then((posts) => {
+      slug = String(slug);
+      delete posts[slug];
+      putFileContentsInternal("posts.json", posts).then((res) => {
+        resolve({
+          "posts": posts,
+          "res": res
+        });
+      }).catch((err) => {
+        reject(err);
+      });
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
 
 export const saveDraft = (content, title = null, slug = null) => {
   return new Promise((resolve, reject) => {
@@ -198,37 +256,41 @@ export const getOptions = (key = null) => {
   })
 }
 
-var generateSlug = (str, posts, update) => {
+var generateSlug = (str, update = false, slug = null) => {
   return new Promise((resolve, reject) => {
-    let taken = true;
-    let int = 0;
-    let attempts = 0;
-    if (str.substr(0, 6).toLowerCase() == "draft-") {
-      str = str.substr(6, str.length);
-    }
-    str = str.replace(/[`~!@#$%^&*£()_|+=?;:€'",¬.<>\{\}\[\]\\\/]/gi, '');
-    str = str.toLowerCase().replace(/\s+/g, '-');
-    while (taken && attempts < 5) {
-      attempts++;
-      blockstack.getFile("posts.json", {
-        verify: false,
-        decrypt: false
-      }).then((res) => {
-        if (res && !update) {
-          res = JSON.parse(res);
-          if (!res[str]) {
-            resolve(str);
-            taken = false;
+    if (update && slug) {
+      resolve(String(slug));
+    } else {
+      let taken = true;
+      let int = 0;
+      let attempts = 0;
+      if (str.substr(0, 6).toLowerCase() == "draft-") {
+        str = str.substr(6, str.length);
+      }
+      str = str.replace(/[`~!@#$%^&*£()_|+=?;:€'",¬.<>\{\}\[\]\\\/]/gi, '');
+      str = str.toLowerCase().replace(/\s+/g, '-');
+      while (taken && attempts < 5) {
+        attempts++;
+        blockstack.getFile("posts.json", {
+          verify: false,
+          decrypt: false
+        }).then((res) => {
+          if (res && !update) {
+            res = JSON.parse(res);
+            if (!res[str]) {
+              resolve(str);
+              taken = false;
+            } else {
+              int++;
+              str = `${str}-${int}`;
+            }
           } else {
-            int++;
-            str = `${str}-${int}`;
+            resolve(str);
           }
-        } else {
-          resolve(str);
-        }
-      }).catch((err) => {
-        reject(err);
-      });
+        }).catch((err) => {
+          reject(err);
+        });
+      }
     }
   });
 }
@@ -267,12 +329,11 @@ var getTitleFromContent = (content, title = null) => {
 
 var savePost = (content, title, slug, posts) => {
   return new Promise((resolve, reject) => {
-    if (!posts) {
-      posts = [];
+    if (!slug) {
+      reject("No slug provided");
     }
-    if (!posts[slug]) {
-      posts[slug] = {};
-    }
+    posts = posts || {};
+    posts[slug] = posts[slug] || {};
     posts[slug] = {
       "title": title,
       "content": content,
@@ -313,7 +374,7 @@ export const updatePost = (content, title = null, slug = null, update = false) =
         posts = {};
       }
       getTitleFromContent(content, title).then((title) => {
-        generateSlug(title, posts, update).then((slug) => {
+        generateSlug(title, update, slug).then((slug) => {
           savePost(content, title, slug, posts).then((res) => {
             if (res) {
               console.log(`[DEBUG] Saved post under the slug ${slug}`);
@@ -344,6 +405,12 @@ export const updatePost = (content, title = null, slug = null, update = false) =
       reject(err);
     });
   });
+}
+
+export const sound = (dest) => {
+  dest = String(dest);
+  let audio = new Audio(`https://cdn.chae.sh/audio/${dest}`);
+  audio.play();
 }
 
 export const lastEdited = (time) => {
@@ -414,4 +481,7 @@ Vue.use((vm) => {
   vm.prototype.$signOut = signout;
   vm.prototype.$getFileContents = getFileContents;
   vm.prototype.$deleteAll = deleteAll;
+  vm.prototype.$deletePost = deletePost;
+  vm.prototype.$sound = sound;
+  vm.prototype.$sortPostsByDate = sortPostsByDate;
 });

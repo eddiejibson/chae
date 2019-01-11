@@ -64,16 +64,18 @@ export default {
       update: false,
       disabled: false,
       draftSlug: null,
-      editedSinceUpdate: false
+      editedSinceUpdate: false,
+      successNoise: null
     };
   },
   mounted() {
-    this.$requireSignIn(this.$router);
+    this.successNoise = this.$sound("ok.wav");
     if (this.edit) {
       let file = "posts.json";
       if (this.$route.params.post.toLowerCase().substr(0, 6) == "draft-") {
         file = "drafts.json";
       }
+      console.log(file);
       this.$getFileContents(file)
         .then(post => {
           if (post[this.$route.params.post]) {
@@ -142,18 +144,28 @@ export default {
         this.update || false
       ).then(res => {
         if (res) {
-          this.update = true;
           this.updateOrPublish = "Update";
           this.title = res.title || this.title;
           this.savedStatus = `${pubOrUpd}ed.`;
+          let toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            customClass: "mixin",
+            timer: 3000
+          });
+          toast({
+            type: "success",
+            title: `Post ${pubOrUpd}ed.`,
+            background: "#2B2C31"
+          });
+          this.successNoise.play();
           if (res.slug) {
             this.slug = res.slug;
             this.slugInfo = true;
-            // history.pushState(
-            //   {},
-            //   this.title,
-            //   `${window.location.origin}/edit/${this.slug}`
-            // );
+            if (!this.update) {
+              this.update = true;
+            }
           }
           this.disabled = false;
         }
