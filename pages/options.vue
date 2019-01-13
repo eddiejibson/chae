@@ -1,13 +1,13 @@
 <template>
   <div class="uk-flex uk-flex-center">
     <div class="uk-width-1-2@m uk-margin">
-      <h3 class="h3-field">Update bio</h3>
+      <h3 class="h3-field">Update status</h3>
       <p class="last-edited">{{ lastEdited }}</p>
       <textarea
         class="uk-textarea"
         id="post-content"
         rows="5"
-        placeholder="Write your bio here..."
+        placeholder="Write your chae status/bio here..."
         @input.prevent="bio($event)"
         :value="existingBio"
         ref="input"
@@ -86,7 +86,7 @@ export default {
   },
   head() {
     return {
-      title: "Options - Chae."
+      title: "options || chae."
     };
   }
 };

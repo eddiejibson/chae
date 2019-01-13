@@ -73,6 +73,77 @@ body {
   color: #bdc3c7;
 }
 
+.search-form {
+  height: 75px !important;
+  width: 100% !important;
+  font-size: 2rem !important;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #242528;
+}
+
+
+.search-results {
+  margin-top: 20px;
+}
+
+.small-margin {
+  margin-top: 5px !important;
+}
+
+.search-info {
+  margin-left: 10px !important;
+}
+
+.search-title {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: #fff;
+}
+
+.post-count {
+  margin: 0;
+}
+
+
+.search-profile-picture {
+  width: 75px !important;
+  height: 75px !important;
+  border-radius: 50%;
+}
+
+.search-profile-picture img {
+  width: 75px !important;
+  height: 75px !important;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.search-post {
+  background-color: #2B2C31 !important;
+  color: #bdc3c7;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .08) !important;
+  border-radius: 3px;
+  resize: none;
+  border-color: #28292d !important;
+}
+
 .post-actions-icon svg {
   fill: #bdc3c7;
   width: 1.5rem;
@@ -164,6 +235,7 @@ body {
 
 .profile-info {
   margin-left: 20px;
+  width: 100%;
 }
 
 .uk-link,

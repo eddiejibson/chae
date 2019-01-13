@@ -84,13 +84,61 @@ export const signout = () => {
   blockstack.signUserOut(window.location.origin + "/login");
 }
 
-export const lookupProfile = (handle) => {
+const lookupProfileInternal = (handle) => {
   return new Promise((resolve, reject) => {
-    blockstack.lookupProfile(handle).then((res) => {
+    blockstack.lookupProfile(String(handle)).then((res) => {
       resolve(res);
     }).catch((err) => {
       reject(err);
     });
+  });
+}
+
+const getPostCountInternal = (posts = []) => {
+  return objToArr(posts).length;
+}
+
+export const getPostCount = getPostCountInternal;
+
+export const lookupProfile = lookupProfileInternal;
+
+export const search = (handle) => {
+  return new Promise((resolve, reject) => {
+    handle = String(handle).toLowerCase().replace(/\s/g, "");
+    if (handle.substr(handle.length - 14, handle.length) == ".id.blockstack" || handle.substr(handle.length - 3, handle.length) == ".id") {
+      lookupProfileInternal(handle).then((res) => {
+        if (res) {
+          res.handle = handle;
+          resolve(res);
+        } else {
+          resolve(false);
+        }
+      }).catch((err) => {
+        reject(err);
+      });
+    } else {
+      let newHandle = handle + ".id.blockstack";
+      lookupProfileInternal(newHandle).then((res) => {
+        if (res) {
+          res.handle = newHandle;
+          resolve(res);
+        } else {
+          newHandle = handle + ".id";
+          lookupProfileInternal(newHandle).then((res) => {
+            if (res) {
+              res.handle = newHandle;
+              resolve(res);
+            } else {
+              resolve(false);
+            }
+          }).catch((err) => {
+            reject(err);
+          });
+        }
+      }).catch((err) => {
+        reject(err);
+      })
+    }
   });
 }
 
@@ -109,7 +157,6 @@ const getFileContentsInternal = (file = "options.json", user = null) => {
       } else {
         resolve({});
       }
-
     }).catch((err) => {
       reject(err);
     });
@@ -194,15 +241,7 @@ export const saveDraft = (content, title = null, slug = null) => {
         slug = uuid();
       }
       let slug = `draft-${slug}`;
-      blockstack.getFile("drafts.json", {
-        verify: false,
-        decrypt: false
-      }).then((drafts) => {
-        if (drafts) {
-          drafts = JSON.parse(drafts);
-        } else {
-          drafts = {};
-        }
+      getFileContentsInternal("drafts.json").then((drafts) => {
         drafts[slug] = {
           "title": title,
           "content": content,
@@ -236,12 +275,8 @@ export const saveDraft = (content, title = null, slug = null) => {
 
 export const getOptions = (key = null) => {
   return new Promise((resolve, reject) => {
-    blockstack.getFile("options.json", {
-      verify: false,
-      decrypt: false
-    }).then((res) => {
+    getFileContentsInternal("options.json").then((res) => {
       if (res) {
-        res = JSON.parse(res);
         if (key) {
           resolve(res[key])
         } else {
@@ -271,12 +306,8 @@ var generateSlug = (str, update = false, slug = null) => {
       str = str.toLowerCase().replace(/\s+/g, '-');
       while (taken && attempts < 5) {
         attempts++;
-        blockstack.getFile("posts.json", {
-          verify: false,
-          decrypt: false
-        }).then((res) => {
+        getFileContentsInternal("posts.json").then((res) => {
           if (res && !update) {
-            res = JSON.parse(res);
             if (!res[str]) {
               resolve(str);
               taken = false;
@@ -346,7 +377,22 @@ var savePost = (content, title, slug, posts) => {
     }).catch((err) => {
       reject(err);
     });
-  })
+  });
+}
+
+export const toast = (title, type = "success") => {
+  let toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    customClass: "mixin",
+    timer: 3000
+  });
+  return toast({
+    type: String(type),
+    title: String(title),
+    background: "#2B2C31"
+  });
 }
 
 export const deleteAll = () => {
@@ -364,15 +410,7 @@ export const deleteAll = () => {
 export const updatePost = (content, title = null, slug = null, update = false) => {
   return new Promise((resolve, reject) => {
     let originalTitle = String(title) || "";
-    blockstack.getFile("posts.json", {
-      verify: false,
-      decrypt: false
-    }).then((posts) => {
-      if (posts) {
-        posts = JSON.parse(posts);
-      } else {
-        posts = {};
-      }
+    getFileContentsInternal("posts.json").then((posts) => {
       getTitleFromContent(content, title).then((title) => {
         generateSlug(title, update, slug).then((slug) => {
           savePost(content, title, slug, posts).then((res) => {
@@ -422,7 +460,6 @@ export const lastEdited = (time) => {
   var elapsed = Date.now() - parseInt(time);
   if (elapsed < msPerMinute) {
     return "Just now."
-    /*  return Math.round(elapsed/1000) + ' seconds ago';    */
   } else if (elapsed < msPerHour) {
     let res = Math.round(elapsed / msPerMinute);
     let s = "s";
@@ -484,4 +521,7 @@ Vue.use((vm) => {
   vm.prototype.$deletePost = deletePost;
   vm.prototype.$sound = sound;
   vm.prototype.$sortPostsByDate = sortPostsByDate;
+  vm.prototype.$toast = toast;
+  vm.prototype.$search = search;
+  vm.prototype.$getPostCount = getPostCount;
 });

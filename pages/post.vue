@@ -64,12 +64,12 @@ export default {
       update: false,
       disabled: false,
       draftSlug: null,
-      editedSinceUpdate: false,
-      successNoise: null
+      editedSinceUpdate: false
     };
   },
   mounted() {
-    this.successNoise = this.$sound("ok.wav");
+    this.$requireSignIn(this.$router);
+    UIkit.offcanvas("#offcanvas-nav").hide();
     if (this.edit) {
       let file = "posts.json";
       if (this.$route.params.post.toLowerCase().substr(0, 6) == "draft-") {
@@ -101,7 +101,6 @@ export default {
         });
       this.updateOrPublish = "Update";
     }
-    UIkit.offcanvas("#offcanvas-nav").hide();
     this.timeout = null;
     this.userData = this.$getProfile(false);
   },
@@ -114,11 +113,15 @@ export default {
       this.timeout = setTimeout(() => {
         this.$saveDraft(e.target.value, this.title, this.draftSlug)
           .then(res => {
-            this.savedStatus = "Saved Draft.";
-            if (res.title) {
-              this.title = res.title;
-            } else if (res.slug) {
-              this.draftSlug = res.slug;
+            if (res) {
+              this.savedStatus = "Saved Draft.";
+              if (res.title) {
+                this.title = res.title;
+              } else if (res.slug) {
+                this.draftSlug = res.slug;
+              }
+            } else {
+              this.savedStatus = "Error saving draft :(";
             }
           })
           .catch(err => {
@@ -147,19 +150,8 @@ export default {
           this.updateOrPublish = "Update";
           this.title = res.title || this.title;
           this.savedStatus = `${pubOrUpd}ed.`;
-          let toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            customClass: "mixin",
-            timer: 3000
-          });
-          toast({
-            type: "success",
-            title: `Post ${pubOrUpd}ed.`,
-            background: "#2B2C31"
-          });
-          this.successNoise.play();
+          this.$toast(`Post ${pubOrUpd}ed.`);
+          this.$sound("ok.wav");
           if (res.slug) {
             this.slug = res.slug;
             this.slugInfo = true;
@@ -173,6 +165,11 @@ export default {
     },
     hideSlug() {
       this.slugInfo = false;
+    },
+    head() {
+      return {
+        title: "post || chae."
+      };
     }
   }
 };

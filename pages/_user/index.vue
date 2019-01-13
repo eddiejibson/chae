@@ -25,7 +25,7 @@
             <div class="post">
               <div class="top-post">
                 <h1 :data-slug="key">{{ post.title }}</h1>
-                <div class="post-actions">
+                <div class="post-actions" v-if="own">
                   <span
                     uk-icon="icon: pencil"
                     class="post-actions-icon"
@@ -58,7 +58,7 @@ export default {
   },
   data() {
     return {
-      user: "Loading username...",
+      user: "user",
       bio: "Loading bio...",
       propic: "https://cdn.chae.sh/img/icons/icon.png",
       posts: {},
@@ -66,19 +66,14 @@ export default {
       loading: true,
       username: null,
       toast: null,
-      successNoise: null
+      successNoise: null,
+      own: true
     };
   },
   mounted() {
-    UIkit.offcanvas("#offcanvas-nav").hide();
-    this.toast = Swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      customClass: "mixin",
-      timer: 3000,
-      padding: null
-    });
+    if (UIkit) {
+      UIkit.offcanvas("#offcanvas-nav").hide();
+    }
     this.$lookupProfile(this.$route.params.user)
       .then(profile => {
         this.username = this.$route.params.user;
@@ -88,24 +83,26 @@ export default {
           this.loading = false;
           this.$getFileContents("options.json", this.$route.params.user)
             .then(options => {
-              if (options.bio) {
+              if (options.bio && String(options.bio.content).length > 1) {
                 this.bio = options.bio.content;
               } else {
-                this.bio = "I haven't a bio, yet.";
+                this.bio = "I haven't a chae status, yet.";
               }
             })
             .catch(err => {
-              this.bio = "I haven't a bio, yet.";
+              this.bio = "I haven't a chae status, yet.";
             });
-          this.$getFileContents("posts.json", this.$route.params.user).then(
-            posts => {
+          this.$getFileContents("posts.json", this.$route.params.user)
+            .then(posts => {
               if (posts && Object.keys(posts).length > 0) {
                 this.posts = this.$sortPostsByDate(posts);
               } else {
                 this.posts = false;
               }
-            }
-          );
+            })
+            .catch(err => {
+              this.posts = false;
+            });
         } else {
           this.$nuxt.error({ statusCode: 404, message: "user not found" });
         }
@@ -114,6 +111,17 @@ export default {
         console.error(err);
         this.$nuxt.error({ statusCode: 404, message: "user not found" });
       });
+    let username = localStorage.getItem("username");
+    console.log(this.$route.params.user);
+    console.log(username);
+    if (
+      String(username).toLowerCase() ==
+      String(this.$route.params.user).toLowerCase()
+    ) {
+      this.own = true;
+    } else {
+      this.own = false;
+    }
   },
   methods: {
     sendToUpdate(slug) {
@@ -140,11 +148,8 @@ export default {
                 if (Object.keys(this.posts).length == 0) {
                   this.posts = false;
                 }
-                this.toast({
-                  type: "success",
-                  title: "Deleted post successfully",
-                  background: "#2B2C31"
-                });
+                this.$sound("ok.wav");
+                this.$toast("Deleted post successfully");
               }
             })
             .catch(err => {
@@ -153,6 +158,11 @@ export default {
         }
       });
     }
+  },
+  head() {
+    return {
+      titleTemplate: `${this.user} || chae.`
+    };
   }
 };
 </script>
