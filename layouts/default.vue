@@ -20,6 +20,10 @@ export default {
       link: [
         {
           rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css?family=Inconsolata"
+        },
+        {
+          rel: "stylesheet",
           href: "https://cdn.oxro.io/uikit/3.0.25/css/uikit.min.css"
         },
         {

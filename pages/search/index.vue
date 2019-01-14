@@ -4,7 +4,7 @@
       <span class="uk-form-icon" uk-icon="icon: search"></span>
       <input
         class="uk-input search-form"
-        @input.prevent="searchFor($event)"
+        @input.prevent="handleSearchQuery($event)"
         :value="search"
         type="text"
       >
@@ -19,7 +19,7 @@
           <p>Loading Results</p>
         </div>
       </div>
-      <nuxt-link :to="handle" class="nuxt-link" v-if="result">
+      <nuxt-link :to="'/'+handle" class="nuxt-link" v-if="result">
         <div class="search-post post">
           <div class="uk-flex uk-flex-row">
             <img class="search-profile-picture" :src="propic">
@@ -56,61 +56,70 @@ export default {
     };
   },
   methods: {
-    searchFor(e) {
+    handleSearchQuery(e) {
       this.loading = true;
       this.result = false;
       this.search = e.target.value;
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
-        this.$search(e.target.value)
-          .then(profile => {
-            if (profile) {
-              this.loading = false;
-              this.user = profile.name;
-              this.handle = profile.handle;
-              this.result = true;
-              this.propic = profile.image[0].contentUrl;
-              this.$getFileContents("posts.json", profile.handle)
-                .then(posts => {
-                  if (posts) {
-                    this.postCount = this.$getPostCount(posts);
-                    if (this.postCount == 1) {
-                      this.s = "";
-                    } else {
-                      this.s = "s";
-                    }
-                  }
-                })
-                .catch(err => {
-                  console.error(err);
-                });
-              this.$getFileContents("options.json", profile.handle)
-                .then(options => {
-                  if (options.bio) {
-                    this.bio = options.bio.content;
+        this.performSearch(e.target.value);
+      }, 600);
+    },
+    performSearch(query) {
+      this.$search(query)
+        .then(profile => {
+          if (profile) {
+            this.loading = false;
+            this.user = profile.name;
+            this.handle = profile.handle;
+            this.result = true;
+            this.propic = profile.image[0].contentUrl;
+            this.$getFileContents("posts.json", profile.handle)
+              .then(posts => {
+                if (posts) {
+                  this.postCount = this.$getPostCount(posts);
+                  if (this.postCount == 1) {
+                    this.s = "";
                   } else {
-                    this.bio = "I haven't a bio, yet.";
+                    this.s = "s";
                   }
-                })
-                .catch(err => {
+                }
+              })
+              .catch(err => {
+                console.error(err);
+              });
+            this.$getFileContents("options.json", profile.handle)
+              .then(options => {
+                if (options.bio) {
+                  this.bio = options.bio.content;
+                } else {
                   this.bio = "I haven't a bio, yet.";
-                });
-            } else {
-              this.loading = false;
-              this.result = false;
-            }
-          })
-          .catch(err => {
+                }
+              })
+              .catch(err => {
+                this.bio = "I haven't a bio, yet.";
+              });
+          } else {
             this.loading = false;
             this.result = false;
-            console.error(err);
-          });
-      }, 600);
+          }
+        })
+        .catch(err => {
+          this.loading = false;
+          this.result = false;
+          console.error(err);
+        });
     }
   },
   mounted() {
     if (UIkit) {
       UIkit.offcanvas("#offcanvas-nav").hide();
+    }
+    if (this.$route.params.query) {
+      this.loading = true;
+      this.result = false;
+      this.search = String(this.$route.params.query);
+      this.performSearch(this.$route.params.query);
     }
   },
   head() {

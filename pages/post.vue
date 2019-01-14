@@ -12,10 +12,29 @@
       <div class="slug-info" v-if="slugInfo">
         <div>
           <p>https://chae.sh/{{ this.userData.username }}/{{ this.slug }}</p>
-          <p class="slug-edit" @click.prevent="editSlug">(change)</p>
+          <p class="slug-edit" @click.prevent="triggerEditSlug">(change)</p>
         </div>
         <p v-if="lastEditedBool">Last edited: 2 hours ago</p>
       </div>
+      <div v-if="isEditSlug" class="edit-slug">
+        <div class="slug-root-url">
+          <p>https://chae.sh/{{ this.userData.username }}/</p>
+        </div>
+        <div class="slug-inline uk-inline margin-bottom">
+          <button
+            class="uk-form-icon uk-form-icon-flip"
+            @click.prevent="editSlug"
+            uk-icon="icon: check"
+          ></button>
+          <input
+            type="text"
+            @input.prevent="updateEditedSlug($event)"
+            :value="slug"
+            class="slug-input uk-input"
+          >
+        </div>
+      </div>
+
       <textarea
         class="uk-textarea"
         id="post-content"
@@ -26,7 +45,6 @@
       ></textarea>
       <div class="textarea-info">
         <p>{{ savedStatus }}</p>
-
         <p>{{ characters }} characters.</p>
       </div>
       <div class="bottom-post">
@@ -60,11 +78,15 @@ export default {
       slugInfo: false,
       lastEditedBool: false,
       slug: null,
-      userData: null,
+      userData: {
+        username: null
+      },
       update: false,
       disabled: false,
       draftSlug: null,
-      editedSinceUpdate: false
+      editedSinceUpdate: false,
+      isEditSlug: false,
+      editedSlug: null
     };
   },
   mounted() {
@@ -132,6 +154,28 @@ export default {
     },
     updateTitle(e) {
       this.title = e.target.value;
+    },
+    triggerEditSlug(e) {
+      this.slugInfo = false;
+      this.isEditSlug = true;
+    },
+    editSlug(e) {
+      if (this.slug.toLowerCase() != this.editedSlug.toLowerCase()) {
+        this.$changeSlug(this.slug, this.editedSlug)
+          .then(res => {
+            this.$toast("Slug has been changed");
+            this.$sound("ok.wav");
+            this.slug = res.slug;
+            this.isEditSlug = false;
+            this.slugInfo = true;
+          })
+          .catch(err => {
+            this.$toast("Slug could not be changed", "error");
+          });
+      }
+    },
+    updateEditedSlug(e) {
+      this.editedSlug = e.target.value;
     },
     updatePost() {
       this.disabled = true;

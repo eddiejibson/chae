@@ -111,9 +111,7 @@ export default {
         console.error(err);
         this.$nuxt.error({ statusCode: 404, message: "user not found" });
       });
-    let username = localStorage.getItem("username");
-    console.log(this.$route.params.user);
-    console.log(username);
+    let username = localStorage.getItem("username"); //I will change this method it's stupid
     if (
       String(username).toLowerCase() ==
       String(this.$route.params.user).toLowerCase()

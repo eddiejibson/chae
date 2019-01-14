@@ -302,8 +302,7 @@ var generateSlug = (str, update = false, slug = null) => {
       if (str.substr(0, 6).toLowerCase() == "draft-") {
         str = str.substr(6, str.length);
       }
-      str = str.replace(/[`~!@#$%^&*£()_|+=?;:€'",¬.<>\{\}\[\]\\\/]/gi, '');
-      str = str.toLowerCase().replace(/\s+/g, '-');
+      str = cleanseForSlug(str);
       while (taken && attempts < 5) {
         attempts++;
         getFileContentsInternal("posts.json").then((res) => {
@@ -407,6 +406,35 @@ export const deleteAll = () => {
   });
 }
 
+const cleanseForSlug = (slug) => {
+  return String(slug).replace(/[`~!@#$%^&*£()_|+=?;:€'",¬.<>\{\}\[\]\\\/]/gi, "").replace(/\s+/g, "-").toLowerCase();
+}
+
+export const changeSlug = (oldSlug, newSlug) => {
+  return new Promise((resolve, reject) => {
+    getFileContentsInternal("posts.json").then((posts) => {
+      if (posts[oldSlug]) {
+        newSlug = cleanseForSlug(newSlug);
+        posts[newSlug] = posts[oldSlug];
+        delete posts[oldSlug];
+        putFileContentsInternal("posts.json", posts).then((res) => {
+          resolve({
+            res: res,
+            slug: newSlug
+          });
+        }).catch((err) => {
+          reject(err);
+        });
+      } else {
+        reject("A post with the original slug of" + oldSlug + "was not found.");
+      }
+
+    }).catch((err) => {
+      reject(err);
+    })
+  });
+}
+
 export const updatePost = (content, title = null, slug = null, update = false) => {
   return new Promise((resolve, reject) => {
     let originalTitle = String(title) || "";
@@ -415,7 +443,6 @@ export const updatePost = (content, title = null, slug = null, update = false) =
         generateSlug(title, update, slug).then((slug) => {
           savePost(content, title, slug, posts).then((res) => {
             if (res) {
-              console.log(`[DEBUG] Saved post under the slug ${slug}`);
               if (originalTitle && originalTitle.toLowerCase() == title && originalTitle != "") {
                 resolve({
                   "slug": slug,
@@ -524,4 +551,5 @@ Vue.use((vm) => {
   vm.prototype.$toast = toast;
   vm.prototype.$search = search;
   vm.prototype.$getPostCount = getPostCount;
+  vm.prototype.$changeSlug = changeSlug;
 });

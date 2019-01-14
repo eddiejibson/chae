@@ -30,10 +30,14 @@ body {
 
 .profile-picture {
   width: 150px;
+  height: 150px;
 }
 
 .profile-picture img {
   border-radius: 50%;
+  max-width: 150px;
+  height: 150px;
+  object-fit: cover;
 }
 
 .uk-card-default {
@@ -67,6 +71,12 @@ body {
 
 .swal-modal {
   background-color: #2B2C31;
+}
+
+
+.slug-inline {
+  width: 100%;
+  display: block !important;
 }
 
 .swal2-popup .swal2-styled.swal2-confirm {
@@ -120,15 +130,43 @@ body {
 }
 
 
+.edit-slug {
+  display: flex;
+  flex-direction: row;
+}
+
+.slug-root-url p {
+  margin: 0;
+  color: #bdc3c7;
+}
+
+.slug-input {
+  border-radius: 0 5px 5px 0 !important;
+  padding-left: 5px !important;
+}
+
+.slug-root-url {
+  background-color: #28292d;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+  border-radius: 5px 0 0 5px;
+  vertical-align: middle;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+
 .search-profile-picture {
   width: 75px !important;
   height: 75px !important;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .search-profile-picture img {
   width: 75px !important;
   height: 75px !important;
+  object-fit: cover;
 }
 
 .align-center {
@@ -411,4 +449,20 @@ html {
   border-left: 1px solid #bdc3c7;
   border-right: none;
   width: 0
+}
+
+html {
+  font-family: "Inconsolata", monospace !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+.uk-navbar-item,
+.uk-navbar-nav>li>a,
+.uk-navbar-toggle {
+  font-family: "Inconsolata", monospace !important;
 }
