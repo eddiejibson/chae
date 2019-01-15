@@ -94,17 +94,30 @@ export default {
     UIkit.offcanvas("#offcanvas-nav").hide();
     if (this.edit) {
       let file = "posts.json";
+      let isPrivate = false;
       if (this.$route.params.post.toLowerCase().substr(0, 6) == "draft-") {
         file = "drafts.json";
+        isPrivate = true;
       }
       console.log(file);
-      this.$getFileContents(file)
+      this.$getFileContents(file, null, isPrivate)
         .then(post => {
+          if (typeof post == "string") {
+            post = JSON.parse(post);
+          }
           if (post[this.$route.params.post]) {
             this.post = post[this.$route.params.post].content;
             this.title = post[this.$route.params.post].title;
-            this.slugInfo = true;
-            this.update = true;
+            if (
+              this.$route.params.post.toLowerCase().substr(0, 6) == "draft-"
+            ) {
+              this.slugInfo = false;
+              this.update = false;
+            } else {
+              this.slugInfo = true;
+              this.update = true;
+            }
+
             this.slug = this.$route.params.post;
             this.characters = this.post.length;
           } else {
@@ -121,7 +134,11 @@ export default {
           );
           this.$router.push("/post");
         });
-      this.updateOrPublish = "Update";
+      if (this.$route.params.post.toLowerCase().substr(0, 6) == "draft-") {
+        this.updateOrPublish = "Publish";
+      } else {
+        this.updateOrPublish = "Update";
+      }
     }
     this.timeout = null;
     this.userData = this.$getProfile(false);

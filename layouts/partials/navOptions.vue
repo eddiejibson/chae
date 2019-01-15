@@ -23,6 +23,11 @@
             <span class="uk-margin-small-right" uk-icon="icon: user"></span> My Profile
           </nuxt-link>
         </li>
+        <li>
+          <nuxt-link to="/drafts" v-if="username">
+            <span class="uk-margin-small-right" uk-icon="icon: file-edit"></span> Drafts
+          </nuxt-link>
+        </li>
         <li v-if="username">
           <nuxt-link to="/options">
             <span class="uk-margin-small-right" uk-icon="icon: cog"></span> Options

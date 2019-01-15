@@ -124,19 +124,6 @@
   outline: 0;
 }
 
-@keyframes wave-animation {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(20deg);
-  }
-  75% {
-    transform: rotate(-15deg);
-  }
-}
-
 .footer a,
 .part-1 a {
   color: #fff !important;
@@ -193,7 +180,7 @@ p {
   margin-top: 10px;
 }
 
-svg {
+.feature svg {
   position: absolute;
   top: auto;
   right: 0;

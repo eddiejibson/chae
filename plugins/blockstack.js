@@ -142,18 +142,27 @@ export const search = (handle) => {
   });
 }
 
-const getFileContentsInternal = (file = "options.json", user = null) => {
+const getFileContentsInternal = (file = "options.json", user = null, isPrivate = false) => {
   return new Promise((resolve, reject) => {
-    let opts = {
-      decrypt: false,
-      verify: false
-    };
+    let opts;
+    if (isPrivate) {
+      opts = {
+        decrypt: true,
+        verify: true
+      };
+    } else {
+      opts = {
+        decrypt: false,
+        verify: false
+      };
+    }
     if (user) {
       opts.username = String(user);
     }
     blockstack.getFile(String(file), opts).then((res) => {
       if (res) {
-        resolve(JSON.parse(res));
+        res = JSON.parse(res);
+        resolve(res);
       } else {
         resolve({});
       }
@@ -168,9 +177,17 @@ export const getFileContents = getFileContentsInternal;
 
 const putFileContentsInternal = (file = "options.json", content, isPrivate = false) => {
   return new Promise((resolve, reject) => {
-    let opts = {
-      encrypt: false
-    };
+    let opts;
+    if (isPrivate) {
+      opts = {
+        encrypt: true,
+        sign: true
+      };
+    } else {
+      opts = {
+        encrypt: false
+      };
+    }
     blockstack.putFile(String(file), JSON.stringify(content), opts).then((res) => {
       resolve(res);
     }).catch((err) => {
@@ -214,14 +231,18 @@ export const saveOptions = ({
   });
 }
 
-export const deletePost = (slug) => {
+export const deletePost = (slug, file = "posts.json", isPrivate = false) => {
   return new Promise((resolve, reject) => {
-    getFileContentsInternal("posts.json").then((posts) => {
+    getFileContentsInternal(file, null, isPrivate).then((posts) => {
+      if (typeof posts == "string") {
+        posts = JSON.parse(posts);
+      }
       slug = String(slug);
       delete posts[slug];
-      putFileContentsInternal("posts.json", posts).then((res) => {
+      putFileContentsInternal(file, posts, isPrivate).then((res) => {
         resolve({
           "posts": posts,
+          "file": file,
           "res": res
         });
       }).catch((err) => {
@@ -241,15 +262,17 @@ export const saveDraft = (content, title = null, slug = null) => {
         slug = uuid();
       }
       let slug = `draft-${slug}`;
-      getFileContentsInternal("drafts.json").then((drafts) => {
+      getFileContentsInternal("drafts.json", null, true).then((drafts) => {
+        if (typeof drafts == "string") {
+          drafts = JSON.parse(drafts);
+        }
         drafts[slug] = {
           "title": title,
           "content": content,
-          "updated": Date.now()
+          "updated": Date.now(),
+          "draft": true
         };
-        blockstack.putFile("drafts.json", JSON.stringify(drafts), {
-          encrypt: false
-        }).then((res) => {
+        putFileContentsInternal("drafts.json", JSON.stringify(drafts), true).then((res) => {
           if (originalTitle == title) {
             resolve({
               "slug": slug,
@@ -402,7 +425,8 @@ export const deleteAll = () => {
     encrypt: false
   });
   blockstack.putFile("drafts.json", "", {
-    encrypt: false
+    encrypt: true,
+    sign: true
   });
 }
 
@@ -552,4 +576,5 @@ Vue.use((vm) => {
   vm.prototype.$search = search;
   vm.prototype.$getPostCount = getPostCount;
   vm.prototype.$changeSlug = changeSlug;
+  vm.prototype.$putFile = putFileContentsInternal;
 });

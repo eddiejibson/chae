@@ -16,35 +16,41 @@
           </div>
         </div>
       </div>
+
       <div class="posts uk-flex uk-flex-column">
         <div class="no-posts" v-if="!posts">
           <h4 style="color: #bdc3c7;margin: 0;">{{ user }} hasn't authored any posts.</h4>
         </div>
-        <div v-for="(post, key) in posts" :key="post.title" :data-slug="key">
-          <nuxt-link :to="'/'+username+'/'+key+'/'" class="nuxt-link">
+        <!-- toggle will go here -->
+        <div v-for="(post, slug) in posts" :key="slug" :data-slug="slug">
+          <!-- This will be reused in a component, ik it's stupid rn. If anyone wants to do it for me i love you ty -->
+          <nuxt-link :to="'/'+username+'/'+slug+'/'" class="nuxt-link">
             <div class="post">
               <div class="top-post">
-                <h1 :data-slug="key">{{ post.title }}</h1>
+                <div class="post-title">
+                  <h1 :data-slug="slug">{{ post.title }}</h1>
+                  <div class="badge" v-if="post.draft" style="margin-left: 10px;">draft</div>
+                </div>
                 <div class="post-actions" v-if="own">
                   <span
                     uk-icon="icon: pencil"
                     class="post-actions-icon"
                     uk-tooltip="Edit Post"
-                    @click.prevent="sendToUpdate(key)"
+                    @click.prevent="sendToUpdate(slug)"
                   ></span>
                   <span
                     uk-icon="icon: trash"
                     class="post-actions-icon"
                     uk-tooltip="Delete Post"
-                    @click.prevent="deletePost(key)"
+                    @click.prevent="deletePost(slug, 'posts.json')"
                   ></span>
                 </div>
               </div>
-
-              <p>{{ post.content }}</p>
+              <div class="preview-post" v-html="post.content"></div>
             </div>
           </nuxt-link>
         </div>
+        <!-- -->
       </div>
     </div>
   </div>
@@ -52,6 +58,12 @@
 
 <script>
 import * as blockstack from "blockstack";
+import marked from "marked";
+marked.setOptions({
+  highlight: function(code) {
+    return require("highlight.js").highlightAuto(code).value;
+  }
+});
 export default {
   validate({ params }) {
     return true;
@@ -62,6 +74,7 @@ export default {
       bio: "Loading bio...",
       propic: "https://cdn.chae.sh/img/icons/icon.png",
       posts: {},
+      drafts: {},
       userPosts: null,
       loading: true,
       username: null,
@@ -92,15 +105,29 @@ export default {
             .catch(err => {
               this.bio = "I haven't a chae status, yet.";
             });
+
           this.$getFileContents("posts.json", this.$route.params.user)
             .then(posts => {
               if (posts && Object.keys(posts).length > 0) {
-                this.posts = this.$sortPostsByDate(posts);
+                posts = this.$sortPostsByDate(posts);
+                for (
+                  let index = 0;
+                  index < Object.keys(posts).length;
+                  index++
+                ) {
+                  let i = Object.keys(posts)[index];
+                  if (posts[i]) {
+                    posts[i].content = posts[i].content.substr(0, 500);
+                    posts[i].content = marked(posts[i].content);
+                  }
+                }
+                this.posts = posts;
               } else {
                 this.posts = false;
               }
             })
             .catch(err => {
+              console.error("Error retrieving posts", err);
               this.posts = false;
             });
         } else {
@@ -139,7 +166,7 @@ export default {
         confirmButtonText: "Yes, delete it!"
       }).then(result => {
         if (result.value) {
-          this.$deletePost(slug)
+          this.$deletePost(slug, "posts.json")
             .then(res => {
               if (res.posts) {
                 this.posts = res.posts;

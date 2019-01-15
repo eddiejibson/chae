@@ -34,7 +34,7 @@ module.exports = {
     link: [{
       rel: 'icon',
       type: 'image/x-icon',
-      href: '/favicon.ico'
+      href: 'https://chae.sh/favicon.ico'
     }]
   },
 
@@ -62,11 +62,7 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: [
-    // Doc: https://github.com/nuxt-community/axios-module#usage
-    '@nuxtjs/axios',
-    "@/modules/blockstack.js"
-  ],
+  modules: [],
   /*
    ** Axios module configuration
    */

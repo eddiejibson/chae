@@ -2,8 +2,12 @@
 <script>
 export default {
   mounted() {
-    let username = sessionStorage.getItem("username");
-    this.$router.push(`/${username}`);
+    let username = localStorage.getItem("username");
+    if (condition) {
+      this.$router.push(`/${username}`);
+    } else {
+      this.$router.push("/login");
+    }
   }
 };
 </script>
