@@ -70,7 +70,7 @@
             <h1>Open Source</h1>
           </div>
         </div>
-        <button class="white-btn" v-if="!username">
+        <button class="white-btn" v-if="!username" @click.prevent="signIn">
           <b>Login with Blockstack</b>
         </button>
         <p v-if="username">
@@ -118,6 +118,10 @@
 
 .white-btn:hover {
   cursor: pointer;
+}
+
+.white-btn:focus {
+  outline: 0;
 }
 
 @keyframes wave-animation {
