@@ -76,9 +76,6 @@ export default {
     };
   },
   mounted() {
-    setTimeout(() => {
-      this.$router.push("/");
-    }, 10000);
   }
 };
 </script>

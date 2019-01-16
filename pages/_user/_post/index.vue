@@ -23,12 +23,25 @@
 </template>
 
 <script>
-import marked from "marked";
-marked.setOptions({
-  highlight: function(code) {
-    return require("highlight.js").highlightAuto(code).value;
+var md = require("markdown-it")({
+  highlight: function(str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(lang, str).value;
+      } catch (__) {}
+    }
+
+    return ""; // use external default escaping
   }
 });
+import hljs from "highlight.js";
+// const md = new markdownIt();
+
+// marked.setOptions({
+//   highlight: function(code) {
+//     return require("highlight.js").highlightAuto(code).value;
+//   }
+// });
 export default {
   data() {
     return {
@@ -49,7 +62,7 @@ export default {
       if (post) {
         this.title = String(post.title);
         if (post.content) {
-          this.content = marked(post.content);
+          this.content = md.render(post.content);
         }
         this.loading = false;
       } else {

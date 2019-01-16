@@ -34,15 +34,14 @@
           >
         </div>
       </div>
-
-      <textarea
-        class="uk-textarea"
-        id="post-content"
-        rows="5"
+      <mavon-editor
+        @change="updatePostBody($event)"
+        v-model="post"
+        language="en"
         placeholder="Write something spicy here"
-        @input.prevent="updatePostBody($event)"
-        :value="post"
-      ></textarea>
+        :toolbars="mavonToolbars"
+        :ishljs="true"
+      />
       <div class="textarea-info">
         <p>{{ savedStatus }}</p>
         <p>{{ characters }} characters.</p>
@@ -58,8 +57,13 @@
     </div>
   </div>
 </template>
+
 <script>
+import { mavonEditor } from "mavon-editor";
 export default {
+  components: {
+    mavonEditor
+  },
   props: {
     edit: {
       type: Boolean,
@@ -68,10 +72,42 @@ export default {
   },
   data() {
     return {
+      mavonToolbars: {
+        bold: true,
+        italic: true,
+        header: true,
+        underline: false,
+        strikethrough: true,
+        mark: false,
+        superscript: false,
+        subscript: false,
+        quote: true,
+        ol: true,
+        ul: true,
+        link: true,
+        imagelink: false,
+        code: true,
+        table: true,
+        fullscreen: false,
+        readmodel: false,
+        htmlcode: true,
+        help: false,
+        undo: true,
+        redo: true,
+        trash: false,
+        save: false,
+        navigation: false,
+        alignleft: false,
+        aligncenter: false,
+        alignright: false,
+        subfield: false,
+        preview: false
+      },
+      testVal: "",
       characters: 0,
       savedStatus: "Nothing to save.",
       updateOrPublish: "Publish",
-      post: null,
+      post: "",
       title: null,
       needsPublish: true,
       timeout: 0,
@@ -113,6 +149,7 @@ export default {
             ) {
               this.slugInfo = false;
               this.update = false;
+              this.draftSlug = this.$route.params.post;
             } else {
               this.slugInfo = true;
               this.update = true;
@@ -145,12 +182,13 @@ export default {
   },
   methods: {
     updatePostBody(e) {
-      this.post = e.target.value;
-      this.characters = this.$characterCounter(e);
+      if (e.length < 1) {
+        return;
+      }
       this.savedStatus = "Waiting for user to finish typing...";
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
-        this.$saveDraft(e.target.value, this.title, this.draftSlug)
+        this.$saveDraft(e, this.title, this.draftSlug)
           .then(res => {
             if (res) {
               this.savedStatus = "Saved Draft.";
@@ -208,6 +246,17 @@ export default {
         this.update || false
       ).then(res => {
         if (res) {
+          if (this.draftSlug) {
+            this.$deletePost(this.draftSlug, "drafts.json", true)
+              .then(res => {
+                if (res) {
+                  this.savedStatus = `Draft removed - public copy ${pubOrUpd}ed.`;
+                }
+              })
+              .catch(err => {
+                console.error("Error deleting draft", err);
+              });
+          }
           this.updateOrPublish = "Update";
           this.title = res.title || this.title;
           this.savedStatus = `${pubOrUpd}ed.`;
@@ -229,9 +278,18 @@ export default {
     },
     head() {
       return {
-        title: "post || chae."
+        title: "post || chae.",
+        link: [
+          {
+            rel: "stylesheet",
+            href: "https://cdn.chae.sh/css/editor.css"
+          }
+        ]
       };
     }
   }
 };
 </script>
+
+<style>
+</style>

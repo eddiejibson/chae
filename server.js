@@ -4,8 +4,6 @@ const {
 } = require('nuxt');
 const app = require('express')();
 
-
-// We instantiate Nuxt.js with the options
 const isProd = true;
 const config = require('./nuxt.config.js');
 
@@ -26,10 +24,10 @@ app.use((req, res, next) => {
 if (!isProd) {
   const builder = new Builder(nuxt);
   builder.build();
-  console.log("Building... :D")
+  console.log("Building chae...")
 } else {
-  console.log("No build in production!")
+  console.log("Skipping build, chae is in production...")
 }
 app.use(nuxt.render);
 app.listen(3000);
-console.log('Server is listening on http://localhost:3000');
+console.log("Chae is listening on http://localhost:3000");

@@ -649,3 +649,25 @@ pre {
   display: inline-block;
   width: 100%;
 }
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: inherit !important;
+  background: #212123 !important;
+}
+
+blockquote {
+  color: #bdc3c7 !important;
+  border-left: .25em solid #6a737d !important;
+  padding-right: 5px;
+}
+
+blockquote p {
+  margin-left: 5px;
+}
+
+.auto-textarea-wrapper .auto-textarea-input.no-resize {
+  color: #bdc3c7 !important;
+}

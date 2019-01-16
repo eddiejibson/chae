@@ -1,12 +1,9 @@
 <template>
-  <div>
+  <div class="landing-container">
     <div class="uk-position-relative">
       <div class="header">
-        <h1>chae.</h1>
-        <p id="sub"></p>
-        <!-- <button class="white-btn">
-          <b>Login with Blockstack</b>
-        </button>-->
+        <h1 style="color: #fff !important;">chae.</h1>
+        <p id="sub" class="sub"></p>
       </div>
       <div class="uk-position-top">
         <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
@@ -17,6 +14,9 @@
               </li>
               <li>
                 <a href="https://github.com/eddiejibson/chae">GitHub</a>
+              </li>
+              <li v-if="!username">
+                <nuxt-link :to="'/m1screant.id.blockstack'">Look Around</nuxt-link>
               </li>
               <li @click.prevent="signIn" v-if="!username">
                 <a href="#">Sign In</a>
@@ -85,8 +85,21 @@
   </div>
 </template>
 
-
+<style scoped>
+.landing-container h1,
+h2,
+h3,
+h4,
+h5,
+p {
+  color: #bdc3c7;
+}
+</style>
 <style>
+.sub {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 .feature img {
   width: 100px;
   height: 100px;
@@ -101,6 +114,15 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .features {
+    flex-direction: column;
+  }
+  .part-1 {
+    margin-top: 20px;
+  }
 }
 .feature h1 {
   margin-top: 5px;
@@ -161,15 +183,6 @@
   justify-content: center;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   text-align: center;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-p {
-  color: #d0d5d8 !important;
 }
 
 .header h1 {

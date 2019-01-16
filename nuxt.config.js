@@ -56,7 +56,7 @@ module.exports = {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    "@/plugins/blockstack.js"
+    "@/plugins/app.js"
   ],
 
   /*

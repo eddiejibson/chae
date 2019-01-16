@@ -260,8 +260,10 @@ export const saveDraft = (content, title = null, slug = null) => {
     getTitleFromContent(content, title).then((title) => {
       if (!slug) {
         slug = uuid();
+        slug = `draft-${slug}`;
+      } else {
+        slug = String(slug);
       }
-      let slug = `draft-${slug}`;
       getFileContentsInternal("drafts.json", null, true).then((drafts) => {
         if (typeof drafts == "string") {
           drafts = JSON.parse(drafts);

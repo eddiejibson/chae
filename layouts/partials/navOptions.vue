@@ -3,7 +3,7 @@
     <div class="uk-offcanvas-bar">
       <ul class="uk-nav uk-nav-default">
         <li class="uk-nav-header">
-          <nuxt-link to="/">Chae</nuxt-link>
+          <nuxt-link to="/" onclick="UIkit.offcanvas('#offcanvas-nav').hide();">Chae</nuxt-link>
         </li>
         <li @click.prevent="signIn" v-if="!username">
           <a href="#">
@@ -37,15 +37,15 @@
         </li>
         <li class="uk-nav-divider"></li>
         <li>
-          <a href="#">
+          <nuxt-link to="/donate">
             <span class="uk-margin-small-right" uk-icon="icon: heart"></span> Donate
-          </a>
+          </nuxt-link>
         </li>
-        <li>
+        <!-- <li>
           <a href="#">
             <span class="uk-margin-small-right" uk-icon="icon: lifesaver"></span> Support
           </a>
-        </li>
+        </li>-->
         <li>
           <a href="https://github.com/eddiejibson/chae/">
             <span class="uk-margin-small-right" uk-icon="icon: github"></span> GitHub

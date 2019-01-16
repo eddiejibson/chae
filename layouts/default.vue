@@ -29,6 +29,10 @@ export default {
         {
           rel: "stylesheet",
           href: "https://cdn.chae.sh/css/app.css"
+        },
+        {
+          rel: "stylesheet",
+          href: "https://cdn.chae.sh/css/editor.css"
         }
       ]
     };
