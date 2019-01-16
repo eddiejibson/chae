@@ -16,13 +16,13 @@
                 <a href="https://github.com/eddiejibson/chae">GitHub</a>
               </li>
               <li v-if="!username">
-                <nuxt-link :to="'/m1screant.id.blockstack'">Look Around</nuxt-link>
+                <a href="/m1screant.id.blockstack">Look Around</a>
               </li>
               <li @click.prevent="signIn" v-if="!username">
                 <a href="#">Sign In</a>
               </li>
               <li v-if="username">
-                <nuxt-link :to="'/'+username">Open App</nuxt-link>
+                <a :href="'/'+username">Open App</a>
               </li>
             </ul>
           </div>
