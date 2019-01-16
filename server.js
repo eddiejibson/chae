@@ -6,7 +6,7 @@ const app = require('express')();
 
 
 // We instantiate Nuxt.js with the options
-const isProd = false;
+const isProd = true;
 const config = require('./nuxt.config.js');
 
 config.dev = !(isProd);

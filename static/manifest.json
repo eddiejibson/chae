@@ -1,6 +1,6 @@
 {
   "name": "Chae",
-  "start_url": "localhost:8080",
+  "start_url": "chae.sh",
   "description": "Write powerful documentation.",
   "icons": [{
     "src": "https://cdn.chae.sh/img/icons/192.png",
