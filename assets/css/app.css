@@ -708,6 +708,14 @@ blockquote p {
   z-index: 0 !important;
 }
 
+.post-content h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #bdc3c7;
+}
+
 .op-header.popup-dropdown {
   background: #2B2C31 !important;
   color: #bdc3c7;
