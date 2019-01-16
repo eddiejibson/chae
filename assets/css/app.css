@@ -671,3 +671,58 @@ blockquote p {
 .auto-textarea-wrapper .auto-textarea-input.no-resize {
   color: #bdc3c7 !important;
 }
+
+#editor,
+.v-note-wrapper .v-note-panel .v-note-edit.divarea-wrapper .content-input-wrapper {
+  width: 100%;
+  height: 100%;
+  padding: 8px 5px 15px 25px;
+
+}
+
+.v-note-wrapper .v-note-panel .v-note-edit.divarea-wrapper {
+  overflow-y: hidden;
+}
+
+.auto-textarea-wrapper .auto-textarea-input {
+  overflow-y: scroll;
+}
+
+.markdown-body {
+  font-family: "Inconsolata", monospace !important;
+}
+
+.v-note-wrapper .v-note-op .v-left-item .op-icon:hover,
+.v-note-wrapper .v-note-op .v-right-item .op-icon:hover {
+  color: #bdc3c7 !important;
+  background: transparent !important;
+}
+
+.v-note-wrapper .v-note-op .v-left-item .op-icon.selected,
+.v-note-wrapper .v-note-op .v-right-item .op-icon.selected {
+  color: #fff !important;
+  background: transparent !important;
+}
+
+.markdown-body {
+  z-index: 0 !important;
+}
+
+.op-header.popup-dropdown {
+  background: #2B2C31 !important;
+  color: #bdc3c7;
+}
+
+.dropdown-item {
+  color: #bdc3c7;
+}
+
+.dropdown-item:hover {
+  color: #fff !important;
+  background: transparent !important;
+}
+
+.op-icon.dropdown-wrapper.dropdown:hover {
+  color: #fff !important;
+  background: transparent !important;
+}
