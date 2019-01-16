@@ -1,22 +1,16 @@
-# chae
+<div align="center">
+<a href="https://chae.sh"><img alt="chae" src="https://cdn.chae.sh/img/banner.png" width="532" height="117"></a>
+<br>
+<br>
+<a href="https://paypal.me/eddiejibson/5"><img src="https://img.shields.io/badge/donate-PayPal-brightgreen.svg"></a>
+</div>
 
 > Powerful, simple and decentralized documentation system
 
-## Build Setup
+## Developing:
+`npm run dev`
 
-``` bash
-# install dependencies
-$ yarn install
+## Building & Serving:
+`npm run build`
+`node server.js`
 
-# serve with hot reload at localhost:3000
-$ yarn run dev
-
-# build for production and launch server
-$ yarn run build
-$ yarn start
-
-# generate static project
-$ yarn run generate
-```
-
-For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
