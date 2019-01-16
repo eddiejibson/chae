@@ -37,9 +37,9 @@
         </li>
         <li class="uk-nav-divider"></li>
         <li>
-          <nuxt-link to="/donate">
+          <a href="https://paypal.me/eddiejibson/5">
             <span class="uk-margin-small-right" uk-icon="icon: heart"></span> Donate
-          </nuxt-link>
+          </a>
         </li>
         <!-- <li>
           <a href="#">
