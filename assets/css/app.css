@@ -343,6 +343,15 @@ html {
 
 }
 
+.post-content p,
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+}
+
 .post h1 {
   color: #fff;
   font-size: 1.5rem;

@@ -2,7 +2,9 @@
   <div id="offcanvas-nav" uk-offcanvas="overlay: true">
     <div class="uk-offcanvas-bar">
       <ul class="uk-nav uk-nav-default">
-        <li class="uk-nav-header">Chae</li>
+        <li class="uk-nav-header">
+          <nuxt-link to="/">Chae</nuxt-link>
+        </li>
         <li @click.prevent="signIn" v-if="!username">
           <a href="#">
             <span class="uk-margin-small-right" uk-icon="icon: sign-in"></span> Sign in
