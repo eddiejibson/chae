@@ -7,6 +7,9 @@
 
 > Powerful, simple and decentralized documentation system
 
+## Install Dependencies:
+`npm install`
+
 ## Developing:
 `npm run dev`
 
