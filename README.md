@@ -15,5 +15,6 @@
 
 ## Building & Serving:
 `npm run build`
+
 `node server.js`
 
