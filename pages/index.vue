@@ -36,7 +36,7 @@
           <b>chae</b>?
         </h1>
         <p>
-          We work hard to provide a powerful yet simplistic platform for individuals to write articles, posts, tutorials and documentation in a decentralized environment. We believe that this is the best and only way to move forward - where the user's data can be held in their own hands and not in some large corporations. We've utilized
+          We work hard to provide a powerful yet simple platform for individuals to write articles, posts, tutorials and documentation in a decentralized environment. We believe that this is the best and only way to move forward - where the user's data can be held in their own hands and not in some large corporations. We've utilized
           <a
             href="https://blockstack.org/"
           >Blockstack</a> to make this possible. With chae, new features are being implemented often and not only by the original creator - anyone may contribute via the
