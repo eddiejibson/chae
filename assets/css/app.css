@@ -35,6 +35,7 @@ body {
 
 .profile-picture img {
   border-radius: 50%;
+  width: 150px;
   max-width: 150px;
   height: 150px;
   object-fit: cover;
