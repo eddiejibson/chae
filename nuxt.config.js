@@ -22,10 +22,10 @@ module.exports = {
       }
     ],
     script: [{
-        src: "https://cdn.oxro.io/uikit/3.0.25/js/uikit.min.js"
+        src: "https://cdn.chae.sh/uikit/js/uikit.min.js"
       },
       {
-        src: "https://cdn.oxro.io/uikit/3.0.25/js/uikit-icons.min.js"
+        src: "https://cdn.chae.sh/uikit/js/uikit-icons.min.js"
       },
       {
         src: "https://cdn.jsdelivr.net/npm/sweetalert2@7.33.1/dist/sweetalert2.all.min.js"
