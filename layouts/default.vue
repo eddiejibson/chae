@@ -24,7 +24,7 @@ export default {
         },
         {
           rel: "stylesheet",
-          href: "https://cdn.oxro.io/uikit/3.0.25/css/uikit.min.css"
+          href: "https://cdn.chae.sh/uikit/css/uikit.min.css"
         },
         {
           rel: "stylesheet",
