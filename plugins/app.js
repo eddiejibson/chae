@@ -43,7 +43,7 @@ export const signIn = () => {
   blockstack.redirectToSignIn(origin + "/login", origin + "/manifest.json", ['store_write', 'publish_data']);
 };
 
-export const requireSignIn = (router) => {
+export const requireSignIn = (router, sm = true) => {
   return new Promise((resolve, reject) => {
     if (blockstack.isUserSignedIn()) {
       let username = localStorage.getItem("username");
@@ -70,8 +70,10 @@ export const requireSignIn = (router) => {
         }
       });
     } else {
-      console.log("[DEBUG] User not logged in, redirecting from restricted page.");
-      router.push("/login");
+      if (sm) {
+        console.log("[DEBUG] User not logged in, redirecting from restricted page.");
+        router.push("/login");
+      }
       resolve(false);
     }
   });
