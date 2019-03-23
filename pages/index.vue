@@ -319,6 +319,18 @@ import TypeIt from "typeit";
 export default {
   layout: "landing",
   mounted() {
+    this.$requireSignIn(this.$router)
+      .then(res => {
+        if (res) {
+          let origin = window.location.origin;
+          window.location.replace(`${origin}/${res}`);
+          console.log(`${origin}/${res}`);
+        } else {
+        }
+      })
+      .catch(err => {
+        console.error("Oh no", err);
+      });
     let username = localStorage.getItem("username");
     if (username) {
       this.username = username;
