@@ -28,7 +28,7 @@ module.exports = {
         src: "https://cdn.chae.sh/uikit/js/uikit-icons.min.js"
       },
       {
-        src: "https://cdn.jsdelivr.net/npm/sweetalert2@7.33.1/dist/sweetalert2.all.min.js"
+        src: "https://cdn.jsdelivr.net/npm/sweetalert2@8.5.0/dist/sweetalert2.all.min.js"
       }
     ],
     link: [{
