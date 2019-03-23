@@ -19,6 +19,7 @@
     "mavon-editor": "^2.7.2",
     "node-fetch": "^2.3.0",
     "nuxt": "^2.5.1",
+    "nuxt-start": "^2.5.1",
     "typeit": "^6.0.2"
   }
 }

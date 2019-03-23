@@ -1,7 +1,7 @@
 {
   "apps": [{
     "name": "chae",
-    "script": "./node_modules/nuxt/bin/nuxt-start",
+    "script": "./node_modules/nuxt-start/bin/nuxt-start",
     "instances": 2,
     "exec_mode": "cluster"
   }]
