@@ -34,14 +34,16 @@
           >
         </div>
       </div>
-      <mavon-editor
-        @change="updatePostBody($event)"
-        v-model="post"
-        language="en"
-        placeholder="Write something spicy here"
-        :toolbars="mavonToolbars"
-        :ishljs="true"
-      />
+      <no-ssr>
+        <mavon-editor
+          @change="updatePostBody($event)"
+          v-model="post"
+          language="en"
+          placeholder="Write something spicy here"
+          :toolbars="mavonToolbars"
+          ishljs="true"
+        />
+      </no-ssr>
       <div class="textarea-info">
         <p>{{ savedStatus }}</p>
         <p>{{ characters }} characters.</p>
@@ -61,9 +63,6 @@
 <script>
 import { mavonEditor } from "mavon-editor";
 export default {
-  components: {
-    mavonEditor
-  },
   props: {
     edit: {
       type: Boolean,
