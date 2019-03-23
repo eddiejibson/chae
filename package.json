@@ -10,17 +10,15 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "blockstack": "^18.2.1",
+    "blockstack": "^19.0.0",
     "cross-env": "^5.2.0",
     "express": "^4.16.4",
-    "highlight.js": "^9.13.1",
+    "highlight.js": "^9.15.6",
     "markdown-it": "^8.4.2",
-    "marked": "^0.6.0",
-    "mavon-editor": "^2.6.17",
-    "nuxt": "^2.3.4",
-    "typeit": "^6.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^1.18.9"
+    "marked": "^0.6.1",
+    "mavon-editor": "^2.7.2",
+    "node-fetch": "^2.3.0",
+    "nuxt": "^2.5.1",
+    "typeit": "^6.0.2"
   }
 }
