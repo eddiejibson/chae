@@ -319,7 +319,7 @@ import TypeIt from "typeit";
 export default {
   layout: "landing",
   mounted() {
-    this.$requireSignIn(this.$router)
+    this.$requireSignIn(this.$router, false)
       .then(res => {
         if (res) {
           let origin = window.location.origin;
