@@ -3,7 +3,7 @@
     <div class="uk-position-relative">
       <div class="header">
         <h1 style="color: #fff !important;">chae.</h1>
-        <p id="sub" class="sub"></p>
+        <p id="sub" class="sub" style="color:#fff!important;"></p>
       </div>
       <div class="uk-position-top">
         <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
